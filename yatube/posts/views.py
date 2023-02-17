@@ -100,7 +100,6 @@ def post_edit(request, post_id):
 def add_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
-    print(form.is_valid())
     if form.is_valid():
         comment = form.save(commit=False)
         comment.author = request.user
@@ -125,8 +124,9 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    if request.user != author:
-        Follow.objects.create(user=request.user, author=author)
+    if not Follow.objects.filter(user=request.user, author=author):
+        if request.user != author:
+            Follow.objects.create(user=request.user, author=author)
     return redirect('posts:profile', username=username)
 
 

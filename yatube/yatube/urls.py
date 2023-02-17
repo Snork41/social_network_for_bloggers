@@ -6,6 +6,7 @@ from django.urls import include, path
 from . import settings
 
 handler404 = 'core.views.page_not_found'
+handler403 = 'core.views.csrf_failure'
 
 urlpatterns = [
     path('', include('posts.urls', namespace='posts')),
