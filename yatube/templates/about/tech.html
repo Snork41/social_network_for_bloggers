@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+
+<div class="row">
+  <h1>Вот что я умею</h1>
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <img src="{% static 'img/logo_python.png' %}" width="40" height="40">
+        Python
+      </li>
+      <li class="list-group-item">
+        <img src="{% static 'img/logo_django.png' %}" width="40" height="40">
+        Django
+      </li>
+      <li class="list-group-item">
+      <img src="{% static 'img/logo_git.png' %}" width="40" height="40">
+        Git
+      </li>
+      <li class="list-group-item">
+      <img src="{% static 'img/logo_face.png' %}" width="40" height="40">
+        Терпение
+      </li>
+    </ul>
+  </aside>
+  <article class="col-12 col-md-9">
+    <p>Список слева - технологии которые были использованы при создании этого сайта.</p>
+    <p>По мере разрастания проекта, списочек будет пополняться!</p>
+
+  </article>
+</div>
+{% endblock %}
