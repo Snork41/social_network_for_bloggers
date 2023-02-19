@@ -11,8 +11,7 @@ from django.urls import reverse
 
 from yatube.settings import (COUNT_POSTS, FIRST_OBJ, POSTS_ON_FIRST_PAGE,
                              POSTS_ON_SECOND_PAGE)
-
-from ..models import Comment, Group, Post
+from ..models import Comment, Follow, Group, Post
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -200,41 +199,37 @@ class PostPagesTests(TestCase):
     def test_cache_index_page(self):
         """Кеш главной страницы работает."""
         response_1 = self.client.get(reverse('posts:index'))
-        form_data = {
-            'text': 'Описание',
-        }
-        self.authorized_client.post(
-            reverse(
-                'posts:post_create'), data=form_data
-        )
+        Post.objects.create(author=self.user, text='Новый пост')
         response_2 = self.client.get(reverse('posts:index'))
         cache.clear()
         response_3 = self.client.get(reverse('posts:index'))
         self.assertEqual(response_1.content, response_2.content)
         self.assertNotEqual(response_1.content, response_3.content)
 
-    def test_user_can_following_and_unfollowing(self):
-        """Авторизованный юзер может подписываться
-        и отписываться от других.
-        """
+    def test_user_can_following(self):
+        """Авторизованный юзер может подписываться."""
         self.authorized_client_2.get(
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': self.user.username})
         )
-        response_1 = self.authorized_client_2.get(
+        response = self.authorized_client_2.get(
             reverse(
                 'posts:follow_index')
         )
-        self.assertIn(self.post, response_1.context['page_obj'])
+        self.assertIn(self.post, response.context['page_obj'])
+
+    def test_user_can_unfollowing(self):
+        """Авторизованный юзер может отписываться."""
+        Follow.objects.create(user=self.user_2, author=self.user)
         self.authorized_client_2.get(
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.user.username})
         )
-        response_2 = self.authorized_client_2.get(
+        response = self.authorized_client_2.get(
             reverse('posts:follow_index'))
-        self.assertNotIn(self.post, response_2.context['page_obj'])
+        self.assertNotIn(self.post, response.context['page_obj'])
 
     def test_new_post_show_at_page_follower(self):
         """Новый пост юзера есть в ленте его подписчиков
@@ -301,5 +296,6 @@ class PaginatorViewsTest(TestCase):
         }
         for reverse_name, posts in posts_on_page.items():
             with self.subTest(reverse_name=reverse_name):
+                cache.clear()
                 response = self.authorized_client.get(reverse_name)
                 self.assertEqual(len(response.context['page_obj']), posts)

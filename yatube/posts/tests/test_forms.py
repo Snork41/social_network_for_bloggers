@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Post
+from ..models import Comment, Post
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -61,7 +61,7 @@ class PostCreateFormTests(TestCase):
         self.assertTrue(
             Post.objects.filter(
                 text=form_data['text'],
-                image='posts/small.gif',
+                image=f'posts/{uploaded}',
             ).exists()
         )
 
@@ -76,3 +76,15 @@ class PostCreateFormTests(TestCase):
                 kwargs={'post_id': self.post.id}), data=form_data)
         post_edit = Post.objects.get(id=self.post.id)
         self.assertEqual(post_edit.text, form_data['text'])
+
+    def test_create_comment(self):
+        """Валидная форма создаёт комментарий."""
+        form_data = {
+            'text': 'Новый комментарий',
+        }
+        self.authorized_client.post(
+            reverse(
+                'posts:add_comment',
+                kwargs={'post_id': self.post.id}), data=form_data)
+        self.assertTrue(
+            Comment.objects.filter(text=form_data['text']).exists())
