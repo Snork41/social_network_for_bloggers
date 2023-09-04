@@ -1,25 +1,32 @@
 # YATUBE
-### Discription:
-MEGA social network of bloggers.
-### Technologies:
-Python 3.9
-Django 2.2.19
-### Running a project in development mode:
-- Install and activate virtual environment;
-- Install dependencies from __requirements.txt__ file:
+### Описание:
+Социальная сеть в которой можно публиковать свои посты, прикреплять изображения к ним, читать чужие посты, оставлять комментарии, подписываться на авторов.
+#### Присутствует: ####
+- регистрация пользователей
+- восстановление паролей (через почту)
+- пагинация постов
+- кеширование главной страницы
+- тесты на Unittest
+### Технологии:
+Python 3.9  
+Django 2.2  
+SQlite3  
+Unittest  
+HTML  
+CSS  
+### Запуск проекта в режиме разработки:
+- Создайте и активируйте виртуальное окружение:
+    ```
+    python -m venv venv
+    source venv/Scripts/activate
+    ```
+- Установите зависимости из файла __requirements.txt__:
     ```
     pip install -r requirements.txt
     ````
-- In the folder with the **manage.py** file, run the command:
-    ```
-    python3 manage.py runserver
-    ```
-    _or_
-
+- В директории с файлом **manage.py** , запустите проект:
     ```
     python manage.py runserver
     ```
-- OK, well done!
----
-#### Avtor
-_Maxim Davleev_
+#### Автор:
+_Максим Давлеев_
